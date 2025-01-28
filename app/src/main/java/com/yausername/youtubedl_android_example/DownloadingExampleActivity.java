@@ -36,6 +36,7 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
 
     private Button btnStartDownload;
     private Button btnStopDownload;
+    private Button btnClearUrl;
     private EditText etUrl;
     private Switch useConfigFile;
     private ProgressBar progressBar;
@@ -74,6 +75,7 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
         btnStartDownload = findViewById(R.id.btn_start_download);
         btnStopDownload = findViewById(R.id.btn_stop_download);
         etUrl = findViewById(R.id.et_url);
+        btnClearUrl = findViewById(R.id.btn_clear_url);
         useConfigFile = findViewById(R.id.use_config_file);
         progressBar = findViewById(R.id.progress_bar);
         tvDownloadStatus = findViewById(R.id.tv_status);
@@ -84,6 +86,7 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
     private void initListeners() {
         btnStartDownload.setOnClickListener(this);
         btnStopDownload.setOnClickListener(this);
+        btnClearUrl.setOnClickListener(this);
     }
 
     @Override
@@ -91,6 +94,9 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
         switch (v.getId()) {
             case R.id.btn_start_download:
                 startDownload();
+                break;
+            case R.id.btn_clear_url:
+                etUrl.setText("");
                 break;
             case R.id.btn_stop_download:
                 try {
