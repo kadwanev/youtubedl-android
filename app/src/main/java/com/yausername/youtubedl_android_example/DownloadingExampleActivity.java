@@ -39,7 +39,7 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
     private Button btnStopDownload;
     private Button btnClearUrl;
     private EditText etUrl;
-    private Switch useConfigFile;
+    private Switch bestAudioMode;
     private ProgressBar progressBar;
     private TextView tvDownloadStatus;
     private TextView tvCommandOutput;
@@ -78,7 +78,7 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
         btnStopDownload = findViewById(R.id.btn_stop_download);
         etUrl = findViewById(R.id.et_url);
         btnClearUrl = findViewById(R.id.btn_clear_url);
-        useConfigFile = findViewById(R.id.use_config_file);
+        bestAudioMode = findViewById(R.id.use_config_file);
         progressBar = findViewById(R.id.progress_bar);
         tvDownloadStatus = findViewById(R.id.tv_status);
         pbLoading = findViewById(R.id.pb_status);
@@ -129,15 +129,20 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
 
         YoutubeDLRequest request = new YoutubeDLRequest(url);
         File youtubeDLDir = getDownloadLocation();
-        File config = new File(youtubeDLDir, "config.txt");
+        request.addOption("-P", youtubeDLDir.getAbsolutePath());
 
-        if (useConfigFile.isChecked() && config.exists()) {
-            request.addOption("--config-location", config.getAbsolutePath());
+        request.addOption("--no-mtime");
+        request.addOption("--embed-metadata");
+        request.addOption("--embed-thumbnail");
+        request.addOption("--embed-chapters");
+        request.addOption("--embed-info-json");
+        request.addOption("--merge-output-format", "mkv");
+        request.addOption("--downloader", "libaria2c.so");
+        request.addOption("-o", "%(title)s.%(ext)s");
+        if (bestAudioMode.isChecked()) {
+            request.addOption("-f", "bestvideo[height<=250]+bestaudio/worst");
         } else {
-            request.addOption("--no-mtime");
-            request.addOption("--downloader", "libaria2c.so");
-            request.addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best");
-            request.addOption("-o", youtubeDLDir.getAbsolutePath() + "/%(title)s.%(ext)s");
+            request.addOption("-f", "bestvideo[height<=250]+bestaudio[abr<=115]/worst");
         }
 
         showStart();
