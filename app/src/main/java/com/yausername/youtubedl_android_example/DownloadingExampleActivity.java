@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.yausername.youtubedl_android.DownloadProgressCallback;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLRequest;
 
@@ -30,6 +29,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
 
 
 public class DownloadingExampleActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,14 +50,15 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
     private String processId = "MyDlProcess";
 
 
-    private final DownloadProgressCallback callback = new DownloadProgressCallback() {
+    private final Function3<Float, Long, String, Unit> callback = new Function3<Float, Long, String, Unit>() {
         @Override
-        public void onProgressUpdate(float progress, long etaInSeconds, String line) {
+        public Unit invoke(Float progress, Long o2, String line) {
             runOnUiThread(() -> {
-                        progressBar.setProgress((int) progress);
+                        progressBar.setProgress((int) progress.floatValue());
                         tvDownloadStatus.setText(line);
                     }
             );
+            return Unit.INSTANCE;
         }
     };
 
@@ -134,7 +136,6 @@ public class DownloadingExampleActivity extends AppCompatActivity implements Vie
         } else {
             request.addOption("--no-mtime");
             request.addOption("--downloader", "libaria2c.so");
-            request.addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"");
             request.addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best");
             request.addOption("-o", youtubeDLDir.getAbsolutePath() + "/%(title)s.%(ext)s");
         }
